@@ -1,2 +1,4 @@
-*.config
+accounts.txt
+accounts.db
+.env
 x-24-us-election
