@@ -59,6 +59,12 @@ def process_tweets():
     process_retweets(graph)
     return graph
 
+def get_user_data():
+    with open('./data/mide22/mide22_en_misinfo_user_details.tsv') as infile:
+        reader = csv.DictReader(infile, delimiter='\t')
+        user_info = {user["id"]: user for user in reader}
+    return user_info
+
 def graph_to_nodex():
     edges_dict = process_tweets()
     G = nx.Graph()
@@ -68,12 +74,23 @@ def graph_to_nodex():
 
 def main():
     G = graph_to_nodex()
+    data = get_user_data()
     communities = nx.community.greedy_modularity_communities(G)
+    failure_count = 0
     for node in list(G.nodes):
+        G.nodes[node]["community_index"] = 50
+        if node in data:
+            user_data = data[node]
+            for key, value in user_data.items():
+                G.nodes[node][key] = value
+        else:
+            print(node)
+            failure_count += 1
         for idx in range(50):
             community = communities[idx]
             if node in community:
-                G.nodes[node]["id"] = idx
+                G.nodes[node]["community_index"] = idx
     nx.write_gexf(G, "test.gexf")
+    print(failure_count)
 if __name__=="__main__":
     main()
