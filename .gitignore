@@ -5,3 +5,4 @@ x-24-us-election
 mide22
 *.gexf
 data/model/embeddings.npy
+data/model/Archive
