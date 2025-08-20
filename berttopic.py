@@ -15,6 +15,7 @@ def strings_to_labels(topic, truthieness):
         return topics[topic] * 4 + truth[truthieness]
     else: return topics[topic] * 4 + 3
 
+"15_5_eom__5_0.0_4."
 
 def get_docs():
     docs = []
@@ -32,7 +33,7 @@ def get_docs():
 docs, true_labels = get_docs()
 
 embeddings = np.load('./data/model/embeddings.npy')
-def scuffed_grid_search():
+""" def scuffed_grid_search():
     min_cluster_sizes = [10, 15, 20, 100]
     min_sampless = [5, 8, 10, 15]
     cluster_selection_methods = ['eom']
@@ -42,15 +43,15 @@ def scuffed_grid_search():
     n_componentss = [4, 5, 6, 7, 8]
 
     for (mcs, ms, csm, nn, md, nc) in itertools.product(min_cluster_sizes, min_sampless, cluster_selection_methods, n_neighborss, min_dists, n_componentss):
-        perform_single_search(mcs, ms, csm, nn, md, nc)
+        perform_single_search(mcs, ms, csm, nn, md, nc) """
 
-scores = []
+""" scores = []
 cutoff_homogeneity = -10
-best_homogeneity = []
+best_homogeneity = [] """
 def perform_single_search(min_cluster_size, min_samples, cluster_selection_method, 
                           n_neighbors, min_dist, n_components):    
-    global cutoff_homogeneity
-    global best_homogeneity 
+    """ global cutoff_homogeneity
+    global best_homogeneity  """
     hdbscan_model = HDBSCAN(min_cluster_size=min_cluster_size, min_samples=min_samples, metric='euclidean', cluster_selection_method=cluster_selection_method, prediction_data=True)
     umap_model = UMAP(n_neighbors=n_neighbors, n_components=n_components, min_dist=min_dist, metric='cosine', random_state=42)
 
@@ -61,23 +62,20 @@ def perform_single_search(min_cluster_size, min_samples, cluster_selection_metho
     topics, probs = topic_model.fit_transform(docs, embeddings=embeddings)
     predicted_labels = hdbscan_model.labels_
     homogeneity = homogeneity_score(true_labels, predicted_labels)
-    score = [homogeneity, min_cluster_size, min_samples, cluster_selection_method, n_neighbors, min_dist, n_components]
+    """ score = [homogeneity, min_cluster_size, min_samples, cluster_selection_method, n_neighbors, min_dist, n_components]
     scores.append(score)
     if homogeneity > cutoff_homogeneity:
         best_homogeneity.append(score)
         best_homogeneity.sort(key=lambda a: a[1], reverse=True)
         if len(best_homogeneity) > 50:
             best_homogeneity.pop()
-        cutoff_homogeneity = max(cutoff_homogeneity, best_homogeneity[-1][1])
-
+        cutoff_homogeneity = max(cutoff_homogeneity, best_homogeneity[-1][1])"""
     hierarchical_topics = topic_model.hierarchical_topics(docs)
-    fig = topic_model.visualize_hierarchy(hierarchical_topics=hierarchical_topics)
-    fig.write_html(f'./data/model/out_{homogeneity:.3f}__{min_cluster_size}_{min_samples}_{cluster_selection_method}__{n_neighbors}_{min_dist}_{n_components}.html')
-
-scuffed_grid_search()
-print(scores)
-print("IMPORTANT")
-[print(score) for score in best_homogeneity]
+    # fig = topic_model.visualize_hierarchy(hierarchical_topics=hierarchical_topics)
+    # fig.write_html(f'./data/model/out_{homogeneity:.3f}__{min_cluster_size}_{min_samples}_{cluster_selection_method}__{n_neighbors}_{min_dist}_{n_components}.html')
+    # fig = hdbscan_model.single_linkage_tree_.plot()
+    # fig.write_html('./data/model/out/slt_fig.html')
+    hdbscan_model.single_linkage_tree_.to_pandas().to_pickle('./data/model/out/slt.pkl')
 
 
-    
+perform_single_search(10, 20, 'eom', 10, 0.0, 8)
