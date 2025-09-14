@@ -73,9 +73,9 @@ def perform_single_search(min_cluster_size, min_samples, cluster_selection_metho
     hierarchical_topics = topic_model.hierarchical_topics(docs)
     # fig = topic_model.visualize_hierarchy(hierarchical_topics=hierarchical_topics)
     # fig.write_html(f'./data/model/out_{homogeneity:.3f}__{min_cluster_size}_{min_samples}_{cluster_selection_method}__{n_neighbors}_{min_dist}_{n_components}.html')
-    # fig = hdbscan_model.single_linkage_tree_.plot()
-    # fig.write_html('./data/model/out/slt_fig.html')
-    hdbscan_model.single_linkage_tree_.to_pandas().to_pickle('./data/model/out/slt.pkl')
+    # fig = hdbscan_model.condensed_tree_.plot()
+    # fig.write_html('./data/model/out/condensed_tree_fig.html')
+    # hdbscan_model.single_linkage_tree_.to_pandas().to_pickle('./data/model/out/slt.pkl')
 
 
 perform_single_search(10, 20, 'eom', 10, 0.0, 8)
